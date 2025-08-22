@@ -142,6 +142,14 @@ impl CreateNotificationSettingsInput {
 
 /// Parse time string in HH:MM format
 fn parse_time_string(time_str: &str) -> Result<NaiveTime, String> {
+    if time_str.len() != 5
+        || &time_str[2..3] != ":"
+        || !time_str[..2].chars().all(|c| c.is_ascii_digit())
+        || !time_str[3..].chars().all(|c| c.is_ascii_digit())
+    {
+        return Err(format!("Invalid time format: {time_str}. Expected HH:MM"));
+    }
+
     NaiveTime::parse_from_str(time_str, "%H:%M")
         .map_err(|_| format!("Invalid time format: {time_str}. Expected HH:MM"))
 }

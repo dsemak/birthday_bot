@@ -4,17 +4,7 @@ use crate::database::models::PartialBirthday;
 use crate::handlers::commands::create_main_menu_keyboard;
 use crate::handlers::get_user_localized_message;
 use crate::localization::Messages;
-use crate::utils;
 use crate::AppState;
-
-/// Helper function to convert BotError to RequestError
-fn convert_bot_error(e: crate::errors::BotError) -> teloxide::RequestError {
-    tracing::error!("Bot error: {}", e);
-    teloxide::RequestError::from(std::io::Error::new(
-        std::io::ErrorKind::Other,
-        "Bot operation failed",
-    ))
-}
 
 /// Handle default messages (auto-detect birthday format or search)
 pub async fn handle_default_message(
@@ -123,15 +113,20 @@ async fn handle_birthday_parsing(
     chat_id: i64,
 ) -> ResponseResult<()> {
     // Validate the birthday data
-    let errors = birthday_data.validate();
+    let language = app_state
+        .services
+        .localization_service()
+        .get_user_language(user_id)
+        .await
+        .unwrap_or_default();
     let preview = birthday_data.to_preview();
 
-    if !errors.is_empty() {
+    if let Err(e) = birthday_data.validate(language) {
         let fix_errors_msg = get_user_localized_message(&app_state, user_id, || {
             Messages::fix_errors_and_try_again()
         })
         .await;
-        let error_msg = format_birthday_errors(&preview, &errors, &fix_errors_msg);
+        let error_msg = format_birthday_errors(&preview, &[e.to_string()], &fix_errors_msg);
         bot.send_message(msg.chat.id, error_msg).await?;
         return Ok(());
     }
@@ -163,7 +158,7 @@ async fn handle_birthday_parsing(
                 .reply_markup(create_main_menu_keyboard())
                 .await?;
         }
-        Err(e) => {
+        Err(_e) => {
             let error_msg =
                 get_user_localized_message(&app_state, user_id, || Messages::birthday_save_error())
                     .await;
@@ -230,7 +225,7 @@ async fn handle_search_message(
                     .await?;
             }
         }
-        Err(e) => {
+        Err(_e) => {
             let error_msg =
                 get_user_localized_message(&app_state, user_id, || Messages::search_error()).await;
             bot.send_message(msg.chat.id, error_msg)

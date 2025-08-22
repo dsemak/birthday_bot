@@ -639,13 +639,6 @@ impl Messages {
         )
     }
 
-    pub fn validation_username_too_long() -> LocalizedText {
-        LocalizedText::new(
-            "Имя пользователя слишком длинное (максимум 100 символов)",
-            "Username is too long (maximum 100 characters)",
-        )
-    }
-
     pub fn validation_notes_too_long() -> LocalizedText {
         LocalizedText::new(
             "Заметки слишком длинные (максимум 500 символов)",
