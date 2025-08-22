@@ -21,14 +21,6 @@ pub fn format_birthday_preview(preview: &BirthdayPreview) -> String {
         lines.push(format!("📝 **Заметки:** {}", notes));
     }
 
-    if !preview.errors.is_empty() {
-        lines.push("".to_string());
-        lines.push("⚠️ **Ошибки:**".to_string());
-        for error in &preview.errors {
-            lines.push(format!("• {}", error));
-        }
-    }
-
     lines.push("".to_string());
     lines.push("Подтвердите добавление (да/нет):".to_string());
 
@@ -45,13 +37,7 @@ pub fn format_batch_preview(previews: &[BirthdayPreview]) -> String {
         "".to_string(),
     ];
 
-    let valid_count = previews.iter().filter(|p| p.is_valid).count();
-    let invalid_count = previews.len() - valid_count;
-
-    lines.push(format!("✅ Валидных записей: {}", valid_count));
-    if invalid_count > 0 {
-        lines.push(format!("⚠️ Некорректных записей: {}", invalid_count));
-    }
+    lines.push(format!("✅ Записей к добавлению: {}", previews.len()));
 
     // Show first few previews
     let show_count = std::cmp::min(5, previews.len());
@@ -65,13 +51,6 @@ pub fn format_batch_preview(previews: &[BirthdayPreview]) -> String {
 
         if let Some(ref username) = preview.username {
             lines.push(format!("   🔗 @{}", username));
-        }
-
-        if !preview.errors.is_empty() {
-            lines.push("   ⚠️ Ошибки:".to_string());
-            for error in &preview.errors {
-                lines.push(format!("     • {}", error));
-            }
         }
     }
 

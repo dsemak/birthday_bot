@@ -1,4 +1,5 @@
 use teloxide::prelude::*;
+use teloxide::types::ChatId;
 
 use crate::database::models::{AddStep, BotState, PartialBirthday};
 use crate::handlers::commands::create_main_menu_keyboard;
@@ -242,7 +243,7 @@ async fn confirm_single_save(
 
     clear_bot_state(&app_state, user_id, chat_id).await?;
 
-    let (msg_text, is_success) = match result {
+    let (msg_text, _is_success) = match result {
         Ok(_) => (
             crate::handlers::get_user_localized_message(&app_state, user_id, || {
                 Messages::add_single_success()
@@ -281,7 +282,7 @@ async fn next_step(
         data: data.clone(),
     };
     set_bot_state(app_state, user_id, chat_id, next_state, 30_i64).await?;
-    bot.send_message(chat_id, prompt).await?;
+    bot.send_message(ChatId(chat_id), prompt).await?;
     Ok(())
 }
 

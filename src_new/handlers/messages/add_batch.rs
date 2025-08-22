@@ -8,6 +8,8 @@ use crate::localization::Messages;
 use crate::utils;
 use crate::AppState;
 
+use super::send_error_message;
+
 /// Handle batch adding birthdays from file
 pub async fn handle_adding_batch(
     bot: Bot,

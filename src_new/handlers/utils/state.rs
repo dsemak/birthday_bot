@@ -1,8 +1,14 @@
 use teloxide::RequestError;
 
-use super::error::convert_bot_error;
 use crate::database::models::BotState;
 use crate::AppState;
+
+fn convert_bot_error(e: crate::errors::BotError) -> teloxide::RequestError {
+    teloxide::RequestError::from(std::io::Error::new(
+        std::io::ErrorKind::Other,
+        e.to_string(),
+    ))
+}
 
 /// Common logic for setting bot state
 pub async fn set_bot_state(
