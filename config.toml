@@ -1,0 +1,40 @@
+# Birthday Bot Configuration
+[database]
+url = "postgresql://birthday_bot:password@localhost/birthday_bot"
+max_connections = 10
+connection_timeout = 30
+query_timeout = 10
+
+[redis]
+url = "redis://localhost:6379"
+ttl = 3600
+connection_timeout = 5
+
+[security]
+max_file_size = 1048576
+max_birthdays_per_chat = 1000
+rate_limit_per_minute = 10
+rate_limit_per_hour = 100
+block_duration_minutes = 15
+file_upload_cooldown_seconds = 60
+admin_users = []
+
+[notifications]
+default_time = "07:00"
+max_timezone_offset = 12
+max_days_before = 30
+
+[telegram]
+token_env = "TELEGRAM_BOT_TOKEN"
+webhook_url = ""
+webhook_port = 8080
+admin_users = []
+
+[logging]
+level = "info"
+log_to_file = true
+log_directory = "logs"
+
+[metrics]
+enabled = false
+port = 9090

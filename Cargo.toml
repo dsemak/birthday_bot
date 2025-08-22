@@ -1,18 +1,80 @@
 [package]
-name = "birthday_bot"
-version = "0.2.0"
+name = "birthday_bot_v2"
+version = "0.3.0"
 edition = "2021"
+authors = ["Your Name <your.email@example.com>"]
+description = "Advanced Telegram Birthday Reminder Bot with improved security and UX"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[[bin]]
+name = "birthday_bot_v2"
+path = "src_new/main.rs"
 
 [dependencies]
-async-tempfile = { version = "0.4.0" }
-chrono = { version = "0.4.31" }
-clap = { version = "4.4.10", features = ["derive"] }
-log = { version = "0.4" }
-pretty_env_logger = { version = "0.5.0" }
-regex = { version = "1.0" }
+# Telegram bot framework
+teloxide = { version = "0.12", features = ["macros", "webhooks"] }
+
+# Database
+sqlx = { version = "0.8", features = [
+    "runtime-tokio-rustls",
+    "postgres",
+    "chrono",
+    "uuid",
+    "json",
+    "migrate",
+    "macros",
+    "derive",
+], default-features = false }
+
+# Redis for caching
+redis = { version = "0.24", features = ["tokio-comp", "connection-manager"] }
+
+# Async runtime
+tokio = { version = "1.0", features = ["full"] }
+
+# Serialization
 serde = { version = "1.0", features = ["derive"] }
-serde_json = { version = "1.0" }
-teloxide = { version = "0.12", features = ["macros"] }
-tokio = { version =  "1.8", features = ["rt-multi-thread", "macros", "fs"] }
+serde_json = "1.0"
+
+# Configuration
+config = "0.14"
+toml = "0.8"
+
+# Date and time
+chrono = { version = "0.4.31", features = ["serde"] }
+chrono-tz = "0.8"
+
+# Validation
+validator = { version = "0.18", features = ["derive"] }
+
+# Error handling
+anyhow = "1.0"
+thiserror = "1.0"
+
+# Logging and tracing
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+tracing-appender = "0.2"
+
+# Security
+argon2 = "0.5"
+uuid = { version = "1.0", features = ["v4", "serde"] }
+
+# Rate limiting
+governor = "0.6"
+nonzero_ext = "0.3"
+
+# HTTP client for webhooks
+reqwest = { version = "0.11", features = ["json"] }
+
+# CLI argument parsing
+clap = { version = "4.0", features = ["derive"] }
+
+# Environment variables
+dotenvy = "0.15"
+
+# Metrics
+prometheus = "0.13"
+
+# Utilities
+once_cell = "1.19"
+futures = "0.3"
